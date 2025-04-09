@@ -1,0 +1,20 @@
+{
+    "manifest_version": 3,
+    "name": "Smart AutoFormFiller",
+    "version": "1.0",
+    "description": "Fill forms only when you allow it, with your own saved info.",
+    "permissions": ["storage", "scripting", "activeTab"],
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": "icon.png"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"],
+        "run_at": "document_idle"
+      }
+    ],
+    "host_permissions": ["<all_urls>"]
+  }
+  
