@@ -1,29 +1,275 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AutoFill Control</title>
+  <title>FormFillPro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: sans-serif; padding: 10px; width: 250px; }
-    input { width: 100%; margin: 5px 0; }
-    button { margin-top: 10px; width: 100%; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      width: 350px;
+      padding: 16px;
+      background: #f8f9fa;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1a73e8;
+    }
+
+    .actions {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .primary {
+      background: #1a73e8;
+      color: white;
+    }
+
+    .primary:hover {
+      background: #1557b0;
+    }
+
+    .secondary {
+      background: white;
+      color: #1a73e8;
+      border: 1px solid #1a73e8;
+    }
+
+    .secondary:hover {
+      background: #f1f5fe;
+    }
+
+    .form {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-top: 16px;
+      display: none;
+    }
+
+    .form.visible {
+      display: block;
+    }
+
+    .input-group {
+      margin-bottom: 12px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      color: #4b5563;
+      margin-bottom: 4px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.2s ease;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #1a73e8;
+    }
+
+    .status {
+      font-size: 13px;
+      padding: 8px;
+      border-radius: 6px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .status.success {
+      background: #ecfdf5;
+      color: #059669;
+      display: block;
+    }
+
+    .status.error {
+      background: #fef2f2;
+      color: #dc2626;
+      display: block;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      padding: 8px 16px;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #6b7280;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: #e9ecef;
+      color: #1a73e8;
+      font-weight: 500;
+    }
+
+    #templates {
+      display: none;
+    }
+
+    .template-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .template-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .template-name {
+      font-weight: 500;
+    }
+
+    .template-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-button {
+      padding: 6px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: none;
+      color: #6b7280;
+    }
+
+    .icon-button:hover {
+      background: #f3f4f6;
+      color: #1a73e8;
+    }
+
+    #envUpload {
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <h3>AutoFormFiller</h3>
-  <button id="fill">Fill Current Form</button>
-  <button id="edit">Edit My Info</button>
-  <input type="file" id="envUpload" style="display: none;" />
-  <button id="import">Import .env</button>
-  <button id="export">Export .env</button>
-
-  <div id="form" style="display: none;">
-    <input type="text" id="name" placeholder="Name" />
-    <input type="email" id="email" placeholder="Email" />
-    <input type="text" id="college" placeholder="College" />
-    <input type="text" id="phone" placeholder="Phone" />
-    <button id="save">Save Info</button>
+  <div class="header">
+    <div class="logo">FormFillPro</div>
   </div>
 
+  <div class="tabs">
+    <button class="tab active" data-tab="main">Main</button>
+    <button class="tab" data-tab="templates">Templates</button>
+  </div>
+
+  <div id="main">
+    <div class="actions">
+      <button id="fill" class="button primary">
+        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Fill Current Form
+      </button>
+      <button id="edit" class="button secondary">
+        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+        Edit My Info
+      </button>
+      <button id="import" class="button secondary">
+        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+        </svg>
+        Import Data
+      </button>
+      <button id="export" class="button secondary">
+        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Export Data
+      </button>
+    </div>
+
+    <div id="form" class="form">
+      <div class="input-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="Enter your full name" />
+      </div>
+      <div class="input-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="Enter your email" />
+      </div>
+      <div class="input-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="Enter your phone number" />
+      </div>
+      <div class="input-group">
+        <label for="college">College/University</label>
+        <input type="text" id="college" placeholder="Enter your institution" />
+      </div>
+      <button id="save" class="button primary">Save Information</button>
+      <div id="status" class="status"></div>
+    </div>
+  </div>
+
+  <div id="templates">
+    <div class="template-list">
+      <!-- Template items will be added here dynamically -->
+    </div>
+    <button id="addTemplate" class="button secondary" style="margin-top: 12px;">
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      </svg>
+      Add New Template
+    </button>
+  </div>
+
+  <input type="file" id="envUpload" accept=".env" />
   <script src="popup.js"></script>
 </body>
 </html>
